@@ -27,8 +27,18 @@ namespace EFCore
             using (var db = new BloggingContext())
             {
                 var blog = singleBlog(db);
-
                 Console.WriteLine($"{blog.Name}: {db.Entry(blog).Property("Url").CurrentValue}");
+
+                string url = "http://romiller.com";
+                // 1) FromSql with traditional format string
+
+                // 2) FromSql with native interpolation
+                FormattableString sql = $"SELECT * FROM dbo.Blogs WHERE Url = {url}";
+
+                // 3) FromSql with interpolation support
+                var blogs = db.Blogs.FromSql($"SELECT * FROM dbo.Blogs WHERE Url = {url}")
+                        .OrderBy(b => b.Name)
+                        .ToList();
 
                 Console.ReadLine();
             }
