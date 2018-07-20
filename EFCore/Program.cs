@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EFCore
@@ -21,7 +22,6 @@ namespace EFCore
                     db.Blogs.Add(blog);
                     db.SaveChanges();
                 }
-                
             }
 
             using (var db = new BloggingContext())
@@ -39,7 +39,7 @@ namespace EFCore
     {
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Customer> Customers { get; set; }
-
+        
         public BloggingContext()
         {
             Database.EnsureCreated();
@@ -61,8 +61,9 @@ namespace EFCore
             modelBuilder.Entity<Customer>()
                             .OwnsOne(c => c.PhysicalAddress)
                             .ToTable("PhysicalAddresses");
-                            
-        }
+
+            modelBuilder.Entity<Customer>().HasQueryFilter(c => c.Name.Length > 1);                            
+        }        
     }
 
     public class Blog
@@ -96,4 +97,5 @@ namespace EFCore
         public string CityOrTown { get; set; }
         public string CountryName { get; set; }
     }
+        
 }
