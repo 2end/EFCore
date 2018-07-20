@@ -38,6 +38,7 @@ namespace EFCore
     public class BloggingContext : DbContext
     {
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         public BloggingContext()
         {
@@ -54,6 +55,13 @@ namespace EFCore
             modelBuilder.Entity<Blog>()
                             .Property<string>("Url")
                             .HasField("_url");
+
+            modelBuilder.Entity<Customer>()
+                            .OwnsOne(c => c.WorkAddress);
+            modelBuilder.Entity<Customer>()
+                            .OwnsOne(c => c.PhysicalAddress)
+                            .ToTable("PhysicalAddresses");
+                            
         }
     }
 
@@ -68,6 +76,24 @@ namespace EFCore
         {
             _url = url;
         }
+    }
 
+    public class Customer
+    {
+        public int CustomerId { get; set; }
+        public string Name { get; set; }
+
+        public Address WorkAddress { get; set; }
+        public Address PhysicalAddress { get; set; }
+    }
+
+    public class Address
+    {
+        public string LineOne { get; set; }
+        public string LineTwo { get; set; }
+        public string PostalOrZipCode { get; set; }
+        public string StateOrProvince { get; set; }
+        public string CityOrTown { get; set; }
+        public string CountryName { get; set; }
     }
 }

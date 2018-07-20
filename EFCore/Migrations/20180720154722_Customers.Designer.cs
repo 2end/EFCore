@@ -3,14 +3,16 @@ using EFCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EFCore.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20180720154722_Customers")]
+    partial class Customers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +52,9 @@ namespace EFCore.Migrations
                 {
                     b.OwnsOne("EFCore.Address", "PhysicalAddress", b1 =>
                         {
-                            b1.Property<int>("CustomerId");
+                            b1.Property<int>("CustomerId")
+                                .ValueGeneratedOnAdd()
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                             b1.Property<string>("CityOrTown");
 
@@ -64,7 +68,7 @@ namespace EFCore.Migrations
 
                             b1.Property<string>("StateOrProvince");
 
-                            b1.ToTable("PhysicalAddresses");
+                            b1.ToTable("Customers");
 
                             b1.HasOne("EFCore.Customer")
                                 .WithOne("PhysicalAddress")
