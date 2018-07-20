@@ -6,21 +6,27 @@ namespace EFCore
 {
     public class Program
     {
+        private static Func<BloggingContext, Blog> singleBlog = EF.CompileQuery<BloggingContext, Blog>(db => db.Blogs.Single());
+
         public static void Main(string[] args)
         {
             using (var db = new BloggingContext())
             {
-                var blog = new Blog { Name = "Rowan's Blog " };
+                if (!db.Blogs.Any())
+                {
+                    var blog = new Blog { Name = "Rowan's Blog " };
 
-                blog.SetUrl("http://romiller.com");
+                    blog.SetUrl("http://romiller.com");
 
-                db.Blogs.Add(blog);
-                db.SaveChanges();
+                    db.Blogs.Add(blog);
+                    db.SaveChanges();
+                }
+                
             }
 
             using (var db = new BloggingContext())
             {
-                var blog = db.Blogs.Single();
+                var blog = singleBlog(db);
 
                 Console.WriteLine($"{blog.Name}: {db.Entry(blog).Property("Url").CurrentValue}");
 
